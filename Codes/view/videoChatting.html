@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>WebRTC XIANG MENG</title>
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background:url(image/bg-wood-dark.jpg);
+	  background:url(image/img_0231.jpg);
+	  
+    }
+
+  </style>
+  <link type="text/css" rel="stylesheet" href="style/NewVideoStyle.css">
+  <link type="text/css" rel="stylesheet" href="style/Public.css">
+  <link type="text/css" rel="stylesheet" href="style/style6.css">
+</head>
+<body>
+  <div id="title">
+	<div id="title_img">	
+		<img src="image/VideoSystem3.png">
+	</div>
+	<!--
+	<div id="title_exit">
+		<p><strong>Exit the system ? Please press </strong></p>
+	</div>
+	<div id="title_control">
+		<a href="javascript:window.opener=null; window.open('','_self'); window.close(); "><img src="image/Open_Stop1.png"></a>
+	</div>
+	-->
+  </div>
+  
+  
+  <div id="videos">
+    <div id="myVideo">
+		<video id="me" preload width="320" height="240" muted ></video>
+		
+	</div>
+  </div>
+  
+  <div id="StartCamera">
+	<p><a href="#" class="button" id="startVideo">Start My Camera</a></p>
+  </div>
+  <div id="cameraIcon">
+	<img src="image/VideoSymbolNew.png">
+  </div>
+
+  <div id="Backtohome">
+	<a href="index.html" class="a-btn">
+        <span></span>
+		<span>Home Page</span>
+        <span>Click Me!</span>
+	</a>
+  </div>
+  
+  <div id="Frame_Chat">
+  </div>	
+  <div id="chat">
+		<div id="Chat_text">
+			<p>Text chatting and File transformation</p>
+		</div>
+		<div class="msgs" id="msgs"></div>
+		<input type="file" id="fileIpt" class="fileIpt">
+		<button id="sendFileBtn" class="sendFileBtn">Send file</button>
+		<input type="text" id="msgIpt" class="msgIpt">
+		<button id="sendBtn" class="sendBtn">Send</button>
+		<div id="files">
+		</div>
+  </div>
+   
+  <div id="End">
+  </div>
+</body>
+<script type="text/javascript" src="/SkyRTC-client-video.js"></script>
+<script type="text/javascript">
+
+  var videos = document.getElementById("videos");
+  var sendBtn = document.getElementById("sendBtn");
+  var msgs = document.getElementById("msgs");
+  var sendFileBtn = document.getElementById("sendFileBtn");
+  var files = document.getElementById("files");
+  
+  var startVideo = document.getElementById("startVideo");
+  var cameraIcon = document.getElementById("cameraIcon");
+  
+  var rtc = new SkyRTC();//这里的SkyRTC是SkyRTC-client.js中的一个函数,这里应该是创建一个SkyRTC对象
+  
+  console.log("Welcom to our Chatting！~O(∩_∩)O~"); //For testing!!
+  /**********************************************************/
+  sendBtn.onclick = function(event){//如果点击了发送按钮
+    var msgIpt = document.getElementById("msgIpt"),
+        msg = msgIpt.value,
+        p = document.createElement("p");
+    p.innerText = "me: " + msg;
+    //广播消息
+    rtc.broadcast(msg);
+    msgIpt.value = "";
+    msgs.appendChild(p);
+  };
+
+  sendFileBtn.onclick = function(event){
+    //分享文件
+    rtc.shareFile("fileIpt");
+  };
+  /**********************************************************/
+
+  
+
+  //对方同意接收文件
+  rtc.on("send_file_accepted", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Receiver accepts " + file.name + " file,waiting to send";
+
+  });
+  //对方拒绝接收文件
+  rtc.on("send_file_refused", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Receiver rejects " + file.name + " file";
+  });
+  //请求发送文件
+  rtc.on('send_file', function(sendId, socketId, file){
+    var p = document.createElement("p");
+    p.innerText = "Request to send " + file.name + " file";
+    p.id = "sf-" + sendId;
+    files.appendChild(p);
+  });
+  //文件发送成功
+  rtc.on('sended_file', function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //发送文件碎片
+  rtc.on('send_file_chunk', function(sendId, socketId, percent, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = file.name + "file is sending: " + Math.ceil(percent) + "%";
+  });
+  //接受文件碎片
+  rtc.on('receive_file_chunk', function(sendId, socketId, fileName, percent){
+    var p = document.getElementById("rf-" + sendId);
+    p.innerText = "Receiving " + fileName + " file: " +  Math.ceil(percent) + "%";
+  });
+  //接收到文件
+  rtc.on('receive_file', function(sendId, socketId, name){
+    var p = document.getElementById("rf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //发送文件时出现错误
+  rtc.on('send_file_error', function(error){
+    console.log(error);
+  });
+  //接收文件时出现错误
+  rtc.on('receive_file_error', function(error){
+    console.log(error);
+  });
+  //接受到文件发送请求
+  rtc.on('receive_file_ask', function(sendId, socketId, fileName, fileSize){
+    var p;
+    if (window.confirm("User "+socketId + " wants to send you " + fileName + " file, size " + fileSize + "KB, Accept or Reject? ")) {
+      rtc.sendFileAccept(sendId);
+      p = document.createElement("p");
+      p.innerText = "Prepare to accept " + fileName + " file";
+      p.id = "rf-" + sendId;
+      files.appendChild(p);
+    } else {
+      rtc.sendFileRefuse(sendId);
+    }
+  });
+  
+  
+  /**********************************************************/
+  //成功创建WebSocket连接
+  rtc.on("connected", function(socket) {
+    //创建本地视频流
+    startVideo.onclick = function(event){
+		rtc.createStream({
+			"video": true,
+			"audio": {
+                "mandatory": {
+                    "googEchoCancellation": "false",
+					"echoCancellation": "true",
+                    "googAutoGainControl": "true",
+                    "googNoiseSuppression": "false",
+					"googNoiseReduction": "true",
+                    "googHighpassFilter": "false"
+                },
+                "optional": []
+			}
+		});
+		
+		startVideo.parentNode.removeChild(startVideo);
+		cameraIcon.parentNode.removeChild(cameraIcon);
+		
+	};
+  });
+  //创建本地视频流成功
+  rtc.on("stream_created", function(stream) {
+    document.getElementById('me').src = URL.createObjectURL(stream);//绑定本地媒体流到video标签用于输出
+	document.getElementById('me').setAttribute("controls", "controls");
+    document.getElementById('me').play();
+	document.getElementById('me').setAttribute("style", "box-shadow: 0 -2px 4px rgba(0,0,0,0.3),0 3px 4px rgba(0,0,0,0.3);margin: 0.5em 0.1em 0 0.1em;Transform:scaleX(-1);");
+	var newLabel = document.createElement("div"),
+		LocalId = "LocalVideo";
+	newLabel.setAttribute("class","label");
+	newLabel.innerText="Local Video";
+	newLabel.setAttribute("id", LocalId);
+	document.getElementById("myVideo").appendChild(newLabel);
+	
+  });
+  //创建本地视频流失败
+  rtc.on("stream_create_error", function() {
+    alert("create stream failed!");
+  });
+  
+  /**********************************************************/
+  //接收到其他用户的视频流
+  rtc.on('pc_add_stream', function(stream, socketId) {//stream为remote stream
+    
+	var newDIV = document.createElement("div"),
+		id = "DIV-" + socketId;
+	newDIV.setAttribute("id", id);
+	newDIV.setAttribute("style", "display: inline-block;width: 32%;height: 45%;//border: 1px dotted #FFF5EE;");
+	videos.appendChild(newDIV);
+	
+	var newVideo = document.createElement("video"),
+        id = "other-" + socketId;
+    newVideo.setAttribute("class", "other");
+    newVideo.setAttribute("autoplay", "autoplay");
+	newVideo.setAttribute("controls", "controls");
+	newVideo.setAttribute("style", "box-shadow: 0 -2px 4px rgba(0,0,0,0.3),0 3px 4px rgba(0,0,0,0.3);margin: 0.5 0.1em 0 0.1em;");
+	newVideo.setAttribute("height", "240");
+	newVideo.setAttribute("width", "320");
+    newVideo.setAttribute("id", id);
+    newDIV.appendChild(newVideo);
+	
+	var newLabel = document.createElement("div"),
+		LocalId = "RemoteVideo";
+	newLabel.setAttribute("class","label");
+	newLabel.innerText="Remote Video";
+	newLabel.setAttribute("id", LocalId);
+	newDIV.appendChild(newLabel);
+	
+	
+    rtc.attachStream(stream, id);//将remote stream 传给attachStream函数
+  });
+  //删除其他用户
+  rtc.on('remove_peer', function(socketId) {
+    var video = document.getElementById('other-' + socketId);
+    if(video){
+      video.parentNode.removeChild(document.getElementById("RemoteVideo"));
+	  video.parentNode.removeChild(video);
+	  var myDiv = document.getElementById("DIV-" + socketId);
+	  myDiv.parentNode.removeChild(myDiv);
+    }
+  });
+  //接收到文字信息
+  rtc.on('data_channel_message', function(channel, socketId, message){
+    var p = document.createElement("p");
+    p.innerText = socketId + ": " + message;
+    msgs.appendChild(p);
+  });
+  //连接WebSocket服务器
+  rtc.connect("ws:" + window.location.href.substring(window.location.protocol.length).split('#')[0], window.location.hash.slice(1));
+</script>
+</html>

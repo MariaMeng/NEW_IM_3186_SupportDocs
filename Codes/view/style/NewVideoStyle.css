@@ -1,0 +1,216 @@
+	
+	#title{
+		position: absolute;
+		top:0;
+		left:0;
+		right:0;
+		height:7%;
+		//border: 1px dotted #FFF5EE;
+		//text-align: center;
+		-webkit-box-shadow: 2px 2px 3px rgba(0,0,0,.4); 
+		//background: #ff0090; 
+		//background: #FFCC99;
+		//background: #000;
+		background: burlywood;
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(225,225,225,.3)), to(rgba(0,0,0,.4)));
+	}
+	
+	
+	#title_img{
+		position: absolute;
+		top:0;
+		left:0;
+		width: 50%;
+		height: 100%;
+		//border: 1px dotted #FFF5EE;
+		margin: 0.4em 0 0 1em;
+	}
+	
+	#title_exit{
+		position: absolute;
+		top:0;
+		right:4%;
+		width: 19%;
+		height: 100%;
+		//border: 1px dotted #FFF5EE;
+		Color: #ff0090;
+	}
+	
+	#title_control{
+		position: absolute;
+		top:0;
+		right:0;
+		width: 5%;
+		height: 100%;
+		//border: 1px dotted #FFF5EE;
+		margin: 0.2em 0 0 0;
+	}
+	
+	#videos {
+      position: absolute;
+      top: 7%;
+	  left: 0;
+      bottom: 0;
+      right: 0;
+      overflow: auto;
+	  
+	  //border: 1px dotted #FFF5EE;
+    }
+
+	#myVideo{
+		display: inline-block;
+		width: 32%;
+		height: 45%;
+		text-align:center;
+		//border: 1px dotted #FFF5EE;
+	}
+	
+    video {
+      display: inline-block;
+      width: 100%;
+	  height: 80%;
+	  //box-shadow: 0 -2px 4px rgba(0,0,0,1),0 3px 4px rgba(0,0,0,1);
+	  //margin: 1em 0.1em 1em 0.1em;
+    }
+	
+	.label {
+		//display: inline-block;
+		font-family:Arial,Verdana,Sans-serif;
+		font-size:200;
+		font-weight: 300;
+		//width: 100%;
+		//height:12%;
+		color: #ff0090;
+		font-weight: bold;
+		text-align:center;
+		//border: 1px dotted #FFF5EE;
+		text-shadow: 0 -2px 4px rgba(0,0,0,1),0 3px 4px rgba(0,0,0,1);
+	}
+	
+	
+	#StartCamera{
+		position: absolute;
+		top:40%;
+		right:0;
+		left:0;
+		height: 20%;
+		//border: 1px dotted #FFF5EE;
+		text-align: center;
+	}
+	
+	.button{
+		font-weight: bold;  
+		letter-spacing: -1px; 
+		color: white; 
+		padding: 11px 38px; 
+		border-radius: 10px; 
+		display: inline-block; 
+		-webkit-box-shadow: 2px 2px 3px rgba(0,0,0,.4); 
+		text-decoration: none; 
+		font-size: 20px; 
+		line-height: 30px; 
+		background: #ff0090; 
+		//background: pink;
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(225,225,225,.3)), to(rgba(0,0,0,.4)));  
+		width: 15%;
+		height: 20%;
+		text-align: right;	
+	}
+	
+	#cameraIcon{
+		position: absolute;
+		top:44.5%;
+		left:43%;
+		width:3%;
+		height: 5%;
+		//border: 1px dotted #FFF5EE;
+		text-align: left;
+	}
+	
+	#Backtohome{
+		position: absolute;
+		top:70%;
+		left:85%;
+		right:0;
+		height: 25%;
+		//border: 1px dotted #FFF5EE;
+		text-align: left;
+	}
+	
+	
+	
+	
+	#Frame_Chat{
+		position: absolute;
+		top:100%;
+		left:0;
+		right:0;
+		height: 100%;
+		background:url(../image/back8.gif);
+		border: 1px dotted #99CCFF;
+	}
+	
+	
+	#chat {
+      position: absolute;
+      left: 15%;
+      top: 120%;
+	  right:15%;
+	  height: 60%;
+	  /*background: -webkit-linear-gradient(top,#fff,#9ff);*/
+	  background:url(../image/backB6.gif);
+	  //border: 1px dotted #0f0f0f;
+	  //background-color: rgba(181,230,29,0.5);
+	  text-align:center;
+	  border-radius: 10px;
+	  box-shadow: 0 -2px 4px rgba(0,0,0,0.3),0 3px 4px rgba(0,0,0,0.3);
+	  
+    }
+	#chat .msgIpt, #chat .fileIpt{
+      position: absolute;
+      left: 0;
+      width: 80%;
+    }
+    #chat .sendBtn, #chat .sendFileBtn {
+      position: absolute;
+      left: 80%;
+      width: 20%;
+    }
+    #chat .msgIpt,#chat .sendBtn {
+      bottom: 0;
+    }
+    #chat .fileIpt, #chat .sendFileBtn {
+      bottom: 30px;
+    }
+
+    #chat .msgs {
+      padding: 5%;
+    }
+    #chat .msgs p{
+      margin: 0.3em 0;
+    }
+	
+	#files {
+      position: absolute;
+      bottom: 20%;
+      right: 0;
+      width: 30%;
+    }
+    #files .name {
+    }
+    #files .percent {
+      font-weight: bold;
+      text-decoration: none
+    }
+	
+	
+	#End{
+	  position: absolute;
+	  left: 15%;
+      top: 180%;
+	  right: 15%;
+	  height: 20%;
+	  
+	  //border: 1px dotted #FFF5EE;
+	  
+	}

@@ -1,0 +1,54 @@
+	p{
+		font-family:Arial Rounded MT Bold,Arial,Verdana,Sans-serif;
+		font-size:300;
+	}
+	
+	button[id="callButton"]{
+		background-color: #339933;
+		border: none;
+		border-radius: 2px;
+		color: white;
+		font-family:Arial,Verdana,Sans-serif;
+		font-size: 300;
+		margin: 0 0 1em 0;
+		padding: 0.5em 0.7em 0.6em 0.7em;
+	}
+	
+	button[id="hangupButton"]{
+		background-color: #d84a38;
+		border: none;
+		border-radius: 2px;
+		color: white;
+		font-family:Arial,Verdana,Sans-serif;
+		font-size: 300;
+		margin: 0 0 1em 0;
+		padding: 0.5em 0.7em 0.6em 0.7em;
+	}
+	
+	button[id="callButton"]:active {
+		background-color: green;
+	}
+	
+	button[id="hangupButton"]:active {
+		background-color: #cf402f;
+	}
+
+	button[id="callButton"]:hover {
+		background-color: green;
+	}
+	
+	button[id="hangupButton"]:hover {
+		background-color: #cf402f;
+	}
+
+	button[disabled] {
+		color: #ccc;
+	}
+
+	button[disabled][id="hangupButton"]:hover {
+		background-color: #d84a38;
+	}
+	
+	button[disabled][id="callButton"]:hover {
+		background-color: #339933;
+	}

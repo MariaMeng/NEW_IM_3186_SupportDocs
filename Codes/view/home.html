@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>WebRTC XIANG MENG</title>
+  <style type="text/css">
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+	  background:url(image/back1.gif);
+	  min-height: 100%;
+    }
+	.button{
+		background-color: white;
+		border: none;
+		border-radius: 2px;
+		color: black;
+		font-family:Arial,Verdana,Sans-serif;
+		font-size: 200;
+		//margin: 0 0 1em 0;
+		//padding: 0.5em 0.7em 0.6em 0.7em;
+	}
+  </style>
+  <link type="text/css" rel="stylesheet" href="style/NewAudioStype.css">
+  <link type="text/css" rel="stylesheet" href="style/Public.css">
+  <link type="text/css" rel="stylesheet" href="style/style6.css">
+</head>
+<body>
+  <div id="title">
+	<div id="title_img">	
+		<img src="image/AudioSystem1.png">
+	</div>
+  </div>
+  
+  
+  
+	
+    <div id="SelectCodec">
+		<div id="mySelect">
+				<br>
+				<select id="codec">
+
+					<option value="OPUS">Opus</option>
+					<option value="ISAC/16000">iSAC 16K</option>
+					<option value="G722">G722</option>
+					<option value="PCMU">PCMU</option>
+				</select>
+				<br><br><br><br><br>
+				<button id="callButton">Call</button> 
+				<button id="hangupButton">Hang Up</button>
+				<button id="echoCancellation">Echo Cancellation </button>
+		</div>
+	</div>
+  
+	
+	<div id="AudioVolume">
+			<div id="Text">
+				<p>Measure the volume of a local media stream using WebAudio.</p>
+			</div>
+			<div id="meters">
+				<div id="instant">
+						<div class="label">Instant: </div>
+						<meter high="0.25" max="1" value="0"></meter>
+						<div class="value"></div>
+				</div>
+				<div id="slow">
+						<div class="label">Slow: </div>
+						<meter high="0.25" max="1" value="0"></meter>
+						<div class="value"></div>
+				</div>
+				<div id="clip">
+						<div class="label">Clip: </div>
+						<meter max="1" value="0"></meter>
+						<div class="value"></div>
+				</div>
+			</div>
+	</div>
+	
+	<div id="visualizer_wrapper">
+		<div id="Spectrum_Text">
+			<p>Display the spectrum <p>
+		</div>
+		<canvas id='canvas' width="550" height="235"></canvas>
+	</div>
+	
+	
+	<div id="Record">
+		<div id="RecordText">
+			<p>Click <a id="myReference"  class="button" id="chooseAudio">Allow</a>, then press R for recording, once done, press S to stop and grab the WAV file, then click <a id="myReferenceFinish"  class="button" id="chooseAudio">Finish</a>.</p>
+			<p id="output"></p>
+		</div>
+	</div>
+  
+	<div id="Backtohome">
+		<a href="index.html" class="a-btn">
+			<span></span>
+			<span>Home Page</span>
+			<span>Click Me!</span>
+		</a>
+	</div>
+	
+	<div id="audios">
+		<br>
+		<div class="label">Local audio:</div>
+		<audio id="me" controls ></audio>	
+	</div>
+  
+	
+	
+	<div id="chat">
+		<div id="Chat_text">
+			<p>Text chatting and File transformation</p>
+		</div>
+		<div class="msgs" id="msgs"></div>
+		<input type="file" id="fileIpt" class="fileIpt">
+		<button id="sendFileBtn" class="sendFileBtn">Send file</button>
+		<input type="text" id="msgIpt" class="msgIpt">
+		<button id="sendBtn" class="sendBtn">Send</button>
+		<div id="files">
+		</div>
+	</div>
+	
+	<div id="End">
+	</div>
+  
+</body>
+<script type="text/javascript" src="/SkyRTC-client.js"></script>
+<script type="text/javascript">
+  var numOfUser = 1;//The number of users who is currently in the chatting room
+  
+  var audios = document.getElementById("audios");
+  var sendBtn = document.getElementById("sendBtn");
+  var msgs = document.getElementById("msgs");
+  var sendFileBtn = document.getElementById("sendFileBtn");
+  var files = document.getElementById("files");
+
+  var myReference = document.getElementById("myReference");
+  var myReferenceFinish = document.getElementById("myReferenceFinish");
+  
+  var rtc =  new SkyRTC();//Create an SkyRTC object for rtc variable.
+  
+  //window.alert("Welcome to our Chatting！~O(∩_∩)O~"); //For testing!!
+  /**********************************************************/
+  sendBtn.onclick = function(event){//If send button is pressed
+    var msgIpt = document.getElementById("msgIpt"),
+        msg = msgIpt.value,
+        p = document.createElement("p");
+    p.innerText = "me: " + msg;
+    //Broadcast message
+    rtc.broadcast(msg);
+    msgIpt.value = "";
+    msgs.appendChild(p);
+  };
+
+  sendFileBtn.onclick = function(event){
+    //Share files
+    rtc.shareFile("fileIpt");
+  };
+  /**********************************************************/
+
+  
+
+  //If receiver accepts file request 
+  rtc.on("send_file_accepted", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Receiver accepts " + file.name + " file,waiting to send";
+
+  });
+  //If receiver rejects file request 
+  rtc.on("send_file_refused", function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = "Receiver rejects " + file.name + " file";
+  });
+  //request to send file
+  rtc.on('send_file', function(sendId, socketId, file){
+    var p = document.createElement("p");
+    p.innerText = "Request to send " + file.name + " file";
+    p.id = "sf-" + sendId;
+    files.appendChild(p);
+  });
+  //If file is sent successfully
+  rtc.on('sended_file', function(sendId, socketId, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //Send file chunks
+  rtc.on('send_file_chunk', function(sendId, socketId, percent, file){
+    var p = document.getElementById("sf-" + sendId);
+    p.innerText = file.name + "file is sending: " + Math.ceil(percent) + "%";
+  });
+  //Receives file chunks
+  rtc.on('receive_file_chunk', function(sendId, socketId, fileName, percent){
+    var p = document.getElementById("rf-" + sendId);
+    p.innerText = "Receiving " + fileName + " file: " +  Math.ceil(percent) + "%";
+  });
+  //If receiver receives file
+  rtc.on('receive_file', function(sendId, socketId, name){
+    var p = document.getElementById("rf-" + sendId);
+    p.parentNode.removeChild(p);
+  });
+  //If error happens during file transmission
+  rtc.on('send_file_error', function(error){
+    console.log(error);
+  });
+  //If error happens during file receiving
+  rtc.on('receive_file_error', function(error){
+    console.log(error);
+  });
+  //Receives file request 
+  rtc.on('receive_file_ask', function(sendId, socketId, fileName, fileSize){
+    var p;
+    if (window.confirm("User "+socketId + " wants to send you " + fileName + " file, size " + fileSize + "KB, Accept or Reject? ")) {
+      rtc.sendFileAccept(sendId);
+      p = document.createElement("p");
+      p.innerText = "Prepare to accept " + fileName + " file";
+      p.id = "rf-" + sendId;
+      files.appendChild(p);
+    } else {
+      rtc.sendFileRefuse(sendId);
+    }
+  });
+  
+  
+  /**********************************************************/
+  //Establish WebSocket connection 
+  rtc.on("connected", function(socket) {
+	//Create local audio stream
+	callButton.onclick = function (event){
+		rtc.createAudioStream({
+			"video": false,
+			"audio": true
+		});
+		callButton.disabled = true;
+		hangupButton.disabled = false;
+		codecSelector.disabled = true;//Disable CodecSelector after choosing the selector
+		echoCancellation.disabled = true;
+	};
+	
+	echoCancellation.onclick = function (event){
+		rtc.createAudioStream({
+			"video": false,
+			"audio": {
+                "mandatory": {
+                    "googEchoCancellation": true,
+					"echoCancellation": true,
+                    "googAutoGainControl": true,
+                    "googNoiseSuppression": true,
+					"googNoiseReduction": true,
+                    "googHighpassFilter": true
+                },
+                "optional": []
+			}	
+		});
+		callButton.disabled = true;
+		hangupButton.disabled = false;
+		codecSelector.disabled = true;//Disable CodecSelector after choosing the selector
+		echoCancellation.disabled = true;
+	};
+  });
+  
+  //Create local audio stream successfully
+  rtc.on("stream_created", function(stream) {
+    document.getElementById('me').src = URL.createObjectURL(stream);//Bundle local media stream to audio element for output.
+	document.getElementById('me').volume = 0;
+	document.getElementById('me').muted = 0;
+    //document.getElementById('me').play();
+  });
+  //Failed to create local audio stream 
+  rtc.on("stream_create_error", function() {
+    alert("create stream failed!");
+  });
+  
+  /**********************************************************/
+  //Receive audio streams from other users
+  rtc.on('pc_add_stream', function(stream, socketId) {//stream is the one from remote peer
+    var newBr = document.createElement("br"),
+		id = "br-" + socketId;
+	newBr.setAttribute("id", id);
+	
+	var newDiv = document.createElement("div"),
+        id = "label-" + socketId;
+	newDiv.setAttribute("class","label");
+	newDiv.innerText="Remote audio "+numOfUser+": ";
+	newDiv.setAttribute("id", id);
+	numOfUser++;
+	
+	var newAudio = document.createElement("audio"),
+        id = "other-" + socketId;
+    newAudio.setAttribute("class", "other");
+    newAudio.setAttribute("autoplay", "autoplay");
+	newAudio.setAttribute("controls", "controls");
+    newAudio.setAttribute("id", id);
+    
+	audios.appendChild(newBr);
+	audios.appendChild(newDiv);
+	audios.appendChild(newAudio);
+    rtc.attachStream(stream, id);//pass remote stream to attachStream function
+  });
+  //Delete other users
+  rtc.on('remove_peer', function(socketId) {
+    var video = document.getElementById('other-' + socketId);
+    if(video){
+      video.parentNode.removeChild(video);
+    }
+	
+	var myLabel = document.getElementById('label-' + socketId);
+	if(myLabel){
+		myLabel.parentNode.removeChild(myLabel);
+	}
+	
+	var myBr = document.getElementById('br-' + socketId);
+	if(myBr){
+		myBr.parentNode.removeChild(myBr);
+	}
+	
+  });
+  //Receives text message
+  rtc.on('data_channel_message', function(channel, socketId, message){
+    var p = document.createElement("p");
+    p.innerText = socketId + ": " + message;
+    msgs.appendChild(p);
+  });
+  //Connect WebSocket server
+  rtc.connect("ws:" + window.location.href.substring(window.location.protocol.length).split('#')[0], window.location.hash.slice(1));
+</script>
+</html>

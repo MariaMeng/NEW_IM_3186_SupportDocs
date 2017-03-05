@@ -1,0 +1,3 @@
+There are two folders in IM_3186_SupportDocs folder.
+Codes: All programs in the project
+node_modules: All Node.js library modules needed for the project

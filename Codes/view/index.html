@@ -1,0 +1,131 @@
+<html>
+<head>
+<title>WebRTC XIANG MENG</title>
+<style type="text/css">
+	body{
+		
+		//background:url(image/page-body-bg.png);
+		//background:url(image/backA15.png);
+		//background:url(image/body-bkg.gif);
+		background:url(image/backB1.gif);
+		//background:url(image/bg-wood-dark.jpg);
+		
+		font-family:Arial,Verdana,Sans-serif;
+		font-size:30;
+		
+	}
+	#title{
+		position: absolute;
+		top:5%;
+		left:0;
+		right:0;
+		height:45%;
+		text-align:center;
+		//border: 1px dotted #FF6A6A;
+	}
+	#chooseCommunicationType{
+		position: absolute;
+		top:50%;
+		left:0;
+		right:0;
+		height: 30%;
+		text-align:center;
+		//border: 1px dotted #FF6A6A;
+	}
+	#iCons{
+		position: absolute;
+		top:100%; 
+		height:100%;
+		left:0;
+		right:0;
+		bottom: 0;
+		background:url(image/body-bkg.gif);
+		text-align:center;
+		//border: 1px dotted #FF6A6A;
+	}
+	
+	.button { 
+		font-weight: bold; 
+		text-transform: uppercase; 
+		letter-spacing: -1px; 
+		color: rgba(0,0,0,.7) !important; 
+		padding: 11px 38px; 
+		border-radius: 10px; 
+		display: inline-block; 
+		-webkit-box-shadow: 2px 2px 3px rgba(0,0,0,.4); 
+		text-decoration: none; 
+		background: #fff; 
+		font-size: 30px; 
+		line-height: 30px; 
+		background: #edcb06; 
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(225,225,225,.3)), to(rgba(0,0,0,.4))); 
+		text-shadow: none; 
+		border: 0; 
+		width: auto;
+	}
+	.button.small {padding: 7px 14px; font-size: 26px; line-height: 26px;}
+	.button.green {background-color: #1dcb06;}
+	.button.red {background-color: #ce1e21;}
+	.button:hover {
+		color: rgba(0,0,0,.7); 
+		background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(rgba(225,225,225,.1)), to(rgba(0,0,0,.6)));
+		
+		-webkit-transform:scale(1.05);
+		-moz-transform:scale(1.05);
+		-ms-transform:scale(1.05);
+		-o-transform:scale(1.05);
+		transform:scale(1.05);
+	}
+	.button:active{
+		-webkit-transform:scale(0.95);
+		-moz-transform:scale(0.95);
+		-ms-transform:scale(0.95);
+		-o-transform:scale(0.95);
+		transform:scale(0.95);
+	}
+		
+</style>
+</head>
+<body>
+	<div id="title">
+		<img src="image/Bells.png">
+		
+		<br>
+		<img src="image/pic4.png">
+	</div>
+	
+	<div id="chooseCommunicationType">
+		<p><a href="home.html" class="button" id="chooseAudio">Audio Communication</a></p>
+        <p><a href="javascript:closeme();" class="button green" id="chooseVideo">Video Communication</a></p>
+		
+	</div>
+	
+	<br><br><br>
+	<!--
+	<div id="iCons">
+		<br><br><br>
+		<img src="image/Call1.png">
+		<img src="image/Play1.png">
+		<img src="image/Webpage1.png">
+		<img src="image/Camera2.png">
+		<img src="image/Dialog2.png">
+		<br><br>
+		<img src="image/Camera1.png">
+		<img src="image/Audio.png">
+		<img src="image/Chat.png">
+		<br><br><br><br>
+	</div>
+	-->
+</body>
+
+<script type="text/javascript">
+	
+	function closeme(){
+		//alert("Exit");
+		 window.location.href="videoChatting.html";
+		 //window.open("videoChatting.html","","",true);
+	}
+		
+</script>
+
+</html>
